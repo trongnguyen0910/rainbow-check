@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// API base: uses VITE_API_URL env var (Render backend) or falls back to Vite proxy
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: { 'Content-Type': 'application/json' },
