@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// API base: uses VITE_API_URL env var (Render backend) or falls back to Vite proxy
+// API base: uses VITE_API_URL env var, falls back to Render in PROD, or Vite proxy locally
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://rainbow-check-1.onrender.com/api' : '/api'),
   headers: { 'Content-Type': 'application/json' },
 });
 
