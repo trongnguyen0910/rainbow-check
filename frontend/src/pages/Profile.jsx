@@ -26,7 +26,7 @@ export default function Profile() {
       const d = res.data.data;
       setProfile(d);
       reset({ name: d.user.name, email: d.user.email, phone: d.employee?.phone || '' });
-    } catch { toast.error('Failed to load profile'); }
+    } catch { toast.error('Không thể tải thông tin hồ sơ'); }
     finally { setLoading(false); }
   };
 
@@ -36,31 +36,31 @@ export default function Profile() {
     setSaving(true);
     try {
       await updateProfile(data);
-      toast.success('Profile updated!');
+      toast.success('Cập nhật hồ sơ thành công!');
       loadUser();
       load();
-    } catch (err) { toast.error(err.response?.data?.message || 'Update failed'); }
+    } catch (err) { toast.error(err.response?.data?.message || 'Cập nhật thất bại'); }
     finally { setSaving(false); }
   };
 
   const onChangeColor = async (color) => {
     try {
       await updateAvatar({ avatar_color: color });
-      toast.success('Avatar color updated!');
+      toast.success('Đã cập nhật màu avatar!');
       load(); loadUser();
     } catch {}
   };
 
   const onChangePw = async (data) => {
     if (data.new_password !== data.confirm_password) {
-      toast.error('Passwords do not match'); return;
+      toast.error('Mật khẩu xác nhận không khớp'); return;
     }
     try {
       await changePassword({ current_password: data.current_password, new_password: data.new_password });
-      toast.success('Password changed!');
+      toast.success('Đổi mật khẩu thành công!');
       setPwModal(false);
       pwReset();
-    } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
+    } catch (err) { toast.error(err.response?.data?.message || 'Thất bại'); }
   };
 
   if (loading) return (
@@ -73,11 +73,11 @@ export default function Profile() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="page-title">My Profile</h1>
-        <p className="page-subtitle">Manage your personal information</p>
+        <h1 className="page-title">Hồ sơ của tôi</h1>
+        <p className="page-subtitle">Quản lý thông tin cá nhân của bạn</p>
       </div>
 
-      {/* Profile header */}
+      {/* Tiêu đề hồ sơ */}
       <div className="card p-6">
         <div className="flex flex-col sm:flex-row items-center gap-5">
           <div className="relative">
@@ -85,20 +85,20 @@ export default function Profile() {
           </div>
           <div className="flex-1 text-center sm:text-left">
             <h2 className="text-xl font-bold text-slate-800 dark:text-white">{user?.name}</h2>
-            <p className="text-slate-500">{employee?.position || 'System User'}</p>
+            <p className="text-slate-500">{employee?.position || 'Người dùng hệ thống'}</p>
             <div className="flex items-center gap-2 mt-2 justify-center sm:justify-start">
-              <Badge status={user?.role === 'admin' ? 'active' : user?.role === 'hr' ? 'active' : 'active'} custom={user?.role?.toUpperCase()} />
+              <Badge status={user?.role === 'admin' ? 'active' : 'active'} custom={user?.role?.toUpperCase()} />
               {employee && <Badge status={employee.status} withDot />}
             </div>
           </div>
           <button onClick={() => setPwModal(true)} className="btn-secondary gap-2">
-            <Lock size={15} /> Change Password
+            <Lock size={15} /> Đổi mật khẩu
           </button>
         </div>
 
-        {/* Avatar color picker */}
+        {/* Chọn màu avatar */}
         <div className="mt-5 pt-5 border-t border-slate-100 dark:border-slate-700">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Choose Avatar Color</p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Chọn màu avatar</p>
           <div className="flex flex-wrap gap-2">
             {AVATAR_COLORS.map(c => (
               <button
@@ -112,14 +112,14 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Edit form */}
+      {/* Form chỉnh sửa */}
       <form onSubmit={handleSubmit(onSave)} className="card p-6 space-y-5">
         <h3 className="font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-          <User size={16} className="text-primary-500" /> Personal Information
+          <User size={16} className="text-primary-500" /> Thông tin cá nhân
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="label">Full Name</label>
+            <label className="label">Họ và tên</label>
             <input {...register('name')} className="input" />
           </div>
           <div>
@@ -127,84 +127,84 @@ export default function Profile() {
             <input {...register('email')} type="email" className="input" />
           </div>
           <div>
-            <label className="label">Phone</label>
+            <label className="label">Số điện thoại</label>
             <input {...register('phone')} className="input" placeholder="0901234567" />
           </div>
           <div>
-            <label className="label">Username</label>
+            <label className="label">Tên đăng nhập</label>
             <input value={user?.username} disabled className="input opacity-60 cursor-not-allowed" />
           </div>
         </div>
         {employee && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 dark:border-slate-700">
             <div>
-              <label className="label flex items-center gap-1"><Briefcase size={12} /> Department</label>
+              <label className="label flex items-center gap-1"><Briefcase size={12} /> Phòng ban</label>
               <input value={employee.department} disabled className="input opacity-60 cursor-not-allowed" />
             </div>
             <div>
-              <label className="label flex items-center gap-1"><Briefcase size={12} /> Position</label>
+              <label className="label flex items-center gap-1"><Briefcase size={12} /> Chức vụ</label>
               <input value={employee.position} disabled className="input opacity-60 cursor-not-allowed" />
             </div>
             <div>
-              <label className="label flex items-center gap-1"><Calendar size={12} /> Join Date</label>
+              <label className="label flex items-center gap-1"><Calendar size={12} /> Ngày vào làm</label>
               <input value={employee.join_date} disabled className="input opacity-60 cursor-not-allowed" />
             </div>
           </div>
         )}
         <div className="flex justify-end">
           <button type="submit" disabled={!isDirty || saving} className="btn-primary">
-            {saving ? <span className="spinner border-white/30 border-t-white" /> : <><Save size={15} /> Save Changes</>}
+            {saving ? <span className="spinner border-white/30 border-t-white" /> : <><Save size={15} /> Lưu thay đổi</>}
           </button>
         </div>
       </form>
 
-      {/* Leave balance */}
+      {/* Số ngày phép */}
       {bal && (
         <div className="card p-6">
-          <h3 className="font-semibold text-slate-800 dark:text-white mb-4">Leave Balance</h3>
+          <h3 className="font-semibold text-slate-800 dark:text-white mb-4">Số ngày phép còn lại</h3>
           <div className="grid grid-cols-3 gap-6">
             {[
-              { label: 'Annual',   total: bal.annual_total,   remaining: bal.annual_remaining,   color: 'bg-blue-500' },
-              { label: 'Sick',     total: bal.sick_total,     remaining: bal.sick_remaining,     color: 'bg-amber-500' },
-              { label: 'Personal', total: bal.personal_total, remaining: bal.personal_remaining, color: 'bg-purple-500' },
+              { label: 'Phép năm',     total: bal.annual_total,   remaining: bal.annual_remaining,   color: 'bg-blue-500' },
+              { label: 'Phép bệnh',    total: bal.sick_total,     remaining: bal.sick_remaining,     color: 'bg-amber-500' },
+              { label: 'Phép cá nhân', total: bal.personal_total, remaining: bal.personal_remaining, color: 'bg-purple-500' },
             ].map(b => (
               <div key={b.label} className="text-center">
                 <div className="text-3xl font-black text-slate-800 dark:text-white tabular-nums">{b.remaining}</div>
-                <div className="text-xs text-slate-400 mt-1">{b.label} days left</div>
+                <div className="text-xs text-slate-400 mt-1">{b.label} còn lại</div>
                 <div className="mt-3 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                   <div className={`h-full ${b.color} rounded-full transition-all duration-700`}
                     style={{ width: `${(b.remaining / b.total) * 100}%` }} />
                 </div>
-                <div className="text-[10px] text-slate-400 mt-1">{b.remaining} of {b.total}</div>
+                <div className="text-[10px] text-slate-400 mt-1">{b.remaining} / {b.total}</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Change pw modal */}
-      <Modal open={pwModal} onClose={() => setPwModal(false)} title="Change Password" size="sm"
+      {/* Modal đổi mật khẩu */}
+      <Modal open={pwModal} onClose={() => setPwModal(false)} title="Đổi mật khẩu" size="sm"
         footer={
           <>
-            <button onClick={() => setPwModal(false)} className="btn-secondary">Cancel</button>
-            <button type="submit" form="pw-form" className="btn-primary">Update Password</button>
+            <button onClick={() => setPwModal(false)} className="btn-secondary">Hủy</button>
+            <button type="submit" form="pw-form" className="btn-primary">Cập nhật mật khẩu</button>
           </>
         }
       >
         <form id="pw-form" onSubmit={pwSubmit(onChangePw)} className="space-y-4">
           <div>
-            <label className="label">Current Password</label>
-            <input type="password" {...pwReg('current_password', { required: 'Required' })} className="input" autoComplete="current-password" />
+            <label className="label">Mật khẩu hiện tại</label>
+            <input type="password" {...pwReg('current_password', { required: 'Bắt buộc' })} className="input" autoComplete="current-password" />
             {pwErrors.current_password && <p className="text-red-500 text-xs mt-1">{pwErrors.current_password.message}</p>}
           </div>
           <div>
-            <label className="label">New Password</label>
-            <input type="password" {...pwReg('new_password', { required: 'Required', minLength: { value: 6, message: 'Min 6 characters' } })} className="input" autoComplete="new-password" />
+            <label className="label">Mật khẩu mới</label>
+            <input type="password" {...pwReg('new_password', { required: 'Bắt buộc', minLength: { value: 6, message: 'Tối thiểu 6 ký tự' } })} className="input" autoComplete="new-password" />
             {pwErrors.new_password && <p className="text-red-500 text-xs mt-1">{pwErrors.new_password.message}</p>}
           </div>
           <div>
-            <label className="label">Confirm New Password</label>
-            <input type="password" {...pwReg('confirm_password', { required: 'Required' })} className="input" autoComplete="new-password" />
+            <label className="label">Xác nhận mật khẩu mới</label>
+            <input type="password" {...pwReg('confirm_password', { required: 'Bắt buộc' })} className="input" autoComplete="new-password" />
           </div>
         </form>
       </Modal>

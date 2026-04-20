@@ -3,13 +3,16 @@ import { Download, BarChart3, RefreshCw, TrendingUp, Clock, Calendar } from 'luc
 import { getMonthlyReport, exportReport } from '../api/reports';
 import toast from 'react-hot-toast';
 
-const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const months = [
+  'Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
+  'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12',
+];
 
 export default function Reports() {
   const now = new Date();
-  const [year, setYear]     = useState(now.getFullYear());
-  const [month, setMonth]   = useState(now.getMonth() + 1);
-  const [report, setReport] = useState(null);
+  const [year, setYear]       = useState(now.getFullYear());
+  const [month, setMonth]     = useState(now.getMonth() + 1);
+  const [report, setReport]   = useState(null);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -20,7 +23,7 @@ export default function Reports() {
       const res = await getMonthlyReport({ year, month });
       setReport(res.data.data.report);
       setSummary(res.data.data.summary);
-    } catch { toast.error('Failed to load report'); }
+    } catch { toast.error('Không thể tải báo cáo'); }
     finally { setLoading(false); }
   };
 
@@ -33,11 +36,11 @@ export default function Reports() {
       const url = URL.createObjectURL(res.data);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `attendance_${year}-${String(month).padStart(2,'0')}.${format}`;
+      a.download = `cham_cong_${year}-${String(month).padStart(2,'0')}.${format}`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success(`Exported as ${format.toUpperCase()}`);
-    } catch { toast.error('Export failed'); }
+      toast.success(`Đã xuất file ${format.toUpperCase()}`);
+    } catch { toast.error('Xuất file thất bại'); }
     finally { setExporting(false); }
   };
 
@@ -45,11 +48,11 @@ export default function Reports() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Tiêu đề */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="page-title">Reports</h1>
-          <p className="page-subtitle">Monthly attendance summary and export</p>
+          <h1 className="page-title">Báo cáo</h1>
+          <p className="page-subtitle">Tổng hợp chấm công theo tháng và xuất file</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <select value={month} onChange={e => setMonth(Number(e.target.value))} className="select w-36">
@@ -68,14 +71,14 @@ export default function Reports() {
         </div>
       </div>
 
-      {/* Summary cards */}
+      {/* Thẻ tóm tắt */}
       {summary && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Working Days',       value: summary.working_days,         icon: Calendar,   color: 'text-blue-600 bg-blue-50' },
-            { label: 'Avg Attendance Rate',value: `${summary.avg_attendance_rate}%`, icon: TrendingUp, color: 'text-emerald-600 bg-emerald-50' },
-            { label: 'Total Late Records', value: summary.total_late_records,    icon: Clock,      color: 'text-amber-600 bg-amber-50' },
-            { label: 'Total Absences',     value: summary.total_absent_records,  icon: BarChart3,  color: 'text-red-600 bg-red-50' },
+            { label: 'Ngày làm việc',        value: summary.working_days,          icon: Calendar,   color: 'text-blue-600 bg-blue-50' },
+            { label: 'Tỷ lệ chuyên cần TB',  value: `${summary.avg_attendance_rate}%`, icon: TrendingUp, color: 'text-emerald-600 bg-emerald-50' },
+            { label: 'Tổng số lần đi trễ',   value: summary.total_late_records,    icon: Clock,      color: 'text-amber-600 bg-amber-50' },
+            { label: 'Tổng số lần vắng mặt', value: summary.total_absent_records,  icon: BarChart3,  color: 'text-red-600 bg-red-50' },
           ].map(c => (
             <div key={c.label} className="card p-4 flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl ${c.color} flex items-center justify-center flex-shrink-0`}>
@@ -90,13 +93,13 @@ export default function Reports() {
         </div>
       )}
 
-      {/* Table */}
+      {/* Bảng */}
       <div className="card overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700">
           <h3 className="font-semibold text-slate-800 dark:text-white">
-            {months[month - 1]} {year} — Detailed Report
+            {months[month - 1]} {year} — Báo cáo chi tiết
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">{report?.length || 0} employees</p>
+          <p className="text-xs text-slate-400 mt-0.5">{report?.length || 0} nhân viên</p>
         </div>
         <div className="table-wrapper">
           {loading ? (
@@ -107,15 +110,15 @@ export default function Reports() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>Employee</th>
-                  <th>Department</th>
-                  <th className="text-center">Working Days</th>
-                  <th className="text-center">Present</th>
-                  <th className="text-center">Late</th>
-                  <th className="text-center">Absent</th>
-                  <th className="text-center">Total Hours</th>
-                  <th className="text-center">Avg Hours/Day</th>
-                  <th className="text-center">Rate</th>
+                  <th>Nhân viên</th>
+                  <th>Phòng ban</th>
+                  <th className="text-center">Ngày làm</th>
+                  <th className="text-center">Có mặt</th>
+                  <th className="text-center">Đi trễ</th>
+                  <th className="text-center">Vắng</th>
+                  <th className="text-center">Tổng giờ</th>
+                  <th className="text-center">TB giờ/ngày</th>
+                  <th className="text-center">Tỷ lệ</th>
                 </tr>
               </thead>
               <tbody>
@@ -142,7 +145,7 @@ export default function Reports() {
                   </tr>
                 ))}
                 {(!report || report.length === 0) && (
-                  <tr><td colSpan="9" className="text-center py-10 text-slate-400 text-sm">No data for this period</td></tr>
+                  <tr><td colSpan="9" className="text-center py-10 text-slate-400 text-sm">Không có dữ liệu trong kỳ này</td></tr>
                 )}
               </tbody>
             </table>

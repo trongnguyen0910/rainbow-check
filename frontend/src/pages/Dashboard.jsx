@@ -47,7 +47,7 @@ export default function Dashboard() {
       const res = await getDashboardStats();
       setStats(res.data.data);
     } catch {
-      toast.error('Failed to load dashboard stats');
+      toast.error('Không thể tải dữ liệu tổng quan');
     } finally {
       setLoading(false);
     }
@@ -56,9 +56,9 @@ export default function Dashboard() {
   useEffect(() => { loadStats(); }, [loadStats]);
 
   const formatTime = (d) =>
-    d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const formatDate = (d) =>
-    d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    d.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   if (loading) {
     return (
@@ -70,44 +70,46 @@ export default function Dashboard() {
 
   const ov = stats?.overview || {};
 
+  const greeting = now.getHours() < 12 ? 'Chào buổi sáng' : now.getHours() < 17 ? 'Chào buổi chiều' : 'Chào buổi tối';
+
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Header */}
+      {/* Tiêu đề */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="page-title">
-            Good {now.getHours() < 12 ? 'morning' : now.getHours() < 17 ? 'afternoon' : 'evening'},{' '}
-            <span className="text-gradient">{user?.name?.split(' ')[0]}</span> 👋
+            {greeting},{' '}
+            <span className="text-gradient">{user?.name?.split(' ').slice(-1)[0]}</span> 👋
           </h1>
           <p className="page-subtitle mt-1">{formatDate(now)}</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="card px-4 py-2 text-center">
             <p className="text-xl font-bold text-primary-600 dark:text-primary-400 tabular-nums">{formatTime(now)}</p>
-            <p className="text-xs text-slate-400">Local Time</p>
+            <p className="text-xs text-slate-400">Giờ hiện tại</p>
           </div>
-          <button onClick={loadStats} className="btn-icon text-slate-500 hover:text-primary-600" title="Refresh">
+          <button onClick={loadStats} className="btn-icon text-slate-500 hover:text-primary-600" title="Làm mới">
             <RefreshCw size={18} />
           </button>
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* Thẻ KPI */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Users}       label="Total Employees" value={ov.total_employees || 0}   color="blue"   sub="Active headcount" />
-        <StatCard icon={UserCheck}   label="Present Today"   value={ov.present_today || 0}     color="green"  sub={`${ov.attendance_rate || 0}% attendance rate`} />
-        <StatCard icon={Clock}       label="Late Arrivals"   value={ov.late_today || 0}         color="amber"  sub="Checked in after threshold" />
-        <StatCard icon={Umbrella}    label="On Leave"        value={ov.on_leave || 0}           color="purple" sub={`${ov.pending_leaves || 0} pending requests`} />
+        <StatCard icon={Users}     label="Tổng nhân viên"    value={ov.total_employees || 0}   color="blue"   sub="Đang hoạt động" />
+        <StatCard icon={UserCheck} label="Có mặt hôm nay"   value={ov.present_today || 0}     color="green"  sub={`Tỷ lệ ${ov.attendance_rate || 0}%`} />
+        <StatCard icon={Clock}     label="Đi trễ"            value={ov.late_today || 0}         color="amber"  sub="Vào sau giờ quy định" />
+        <StatCard icon={Umbrella}  label="Đang nghỉ phép"   value={ov.on_leave || 0}           color="purple" sub={`${ov.pending_leaves || 0} đơn chờ duyệt`} />
       </div>
 
-      {/* Charts row */}
+      {/* Hàng biểu đồ */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Weekly Trend */}
+        {/* Xu hướng tuần */}
         <div className="xl:col-span-2 card p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-white">Attendance Trend</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Last 5 working days</p>
+              <h3 className="font-semibold text-slate-800 dark:text-white">Xu hướng chấm công</h3>
+              <p className="text-xs text-slate-400 mt-0.5">5 ngày làm việc gần nhất</p>
             </div>
             <TrendingUp size={18} className="text-primary-500" />
           </div>
@@ -128,17 +130,17 @@ export default function Dashboard() {
               <YAxis tick={{ fontSize: 11, fill: '#94A3B8' }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Area type="monotone" dataKey="present" name="Present" stroke="#3B82F6" fill="url(#gPresent)" strokeWidth={2} dot={{ r: 3 }} />
-              <Area type="monotone" dataKey="late" name="Late" stroke="#F59E0B" fill="url(#gLate)" strokeWidth={2} dot={{ r: 3 }} />
-              <Area type="monotone" dataKey="absent" name="Absent" stroke="#EF4444" fill="none" strokeWidth={2} strokeDasharray="4 2" dot={{ r: 3 }} />
+              <Area type="monotone" dataKey="present" name="Có mặt" stroke="#3B82F6" fill="url(#gPresent)" strokeWidth={2} dot={{ r: 3 }} />
+              <Area type="monotone" dataKey="late"    name="Đi trễ" stroke="#F59E0B" fill="url(#gLate)"    strokeWidth={2} dot={{ r: 3 }} />
+              <Area type="monotone" dataKey="absent"  name="Vắng"   stroke="#EF4444" fill="none"           strokeWidth={2} strokeDasharray="4 2" dot={{ r: 3 }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Department stats */}
+        {/* Thống kê phòng ban */}
         <div className="card p-6">
-          <h3 className="font-semibold text-slate-800 dark:text-white mb-1">By Department</h3>
-          <p className="text-xs text-slate-400 mb-5">Today's presence</p>
+          <h3 className="font-semibold text-slate-800 dark:text-white mb-1">Theo phòng ban</h3>
+          <p className="text-xs text-slate-400 mb-5">Có mặt hôm nay</p>
           <div className="space-y-4">
             {(stats?.department_stats || []).map(d => (
               <div key={d.department}>
@@ -158,14 +160,14 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Monthly BarChart + Recent Attendance */}
+      {/* Biểu đồ tháng + Chấm công gần đây */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* Monthly */}
+        {/* Tháng */}
         <div className="card p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-white">Monthly Overview</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Last 6 months</p>
+              <h3 className="font-semibold text-slate-800 dark:text-white">Tổng quan theo tháng</h3>
+              <p className="text-xs text-slate-400 mt-0.5">6 tháng gần nhất</p>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={200}>
@@ -175,22 +177,22 @@ export default function Dashboard() {
               <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend wrapperStyle={{ fontSize: 10 }} />
-              <Bar dataKey="present" name="Present" fill="#3B82F6" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="late"    name="Late"    fill="#F59E0B" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="absent"  name="Absent"  fill="#EF4444" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="present" name="Có mặt" fill="#3B82F6" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="late"    name="Đi trễ" fill="#F59E0B" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="absent"  name="Vắng"   fill="#EF4444" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Recent attendance */}
+        {/* Chấm công gần đây */}
         <div className="card">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-white">Recent Check-ins</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Latest activity</p>
+              <h3 className="font-semibold text-slate-800 dark:text-white">Chấm công gần đây</h3>
+              <p className="text-xs text-slate-400 mt-0.5">Hoạt động mới nhất</p>
             </div>
             <Link to="/attendance" className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
-              View all <ChevronRight size={14} />
+              Xem tất cả <ChevronRight size={14} />
             </Link>
           </div>
           <div className="divide-y divide-slate-50 dark:divide-slate-700/50">
@@ -208,7 +210,7 @@ export default function Dashboard() {
               </div>
             ))}
             {(!stats?.recent_attendance?.length) && (
-              <p className="text-center text-slate-400 text-sm py-8">No check-ins yet today</p>
+              <p className="text-center text-slate-400 text-sm py-8">Chưa có chấm công hôm nay</p>
             )}
           </div>
         </div>

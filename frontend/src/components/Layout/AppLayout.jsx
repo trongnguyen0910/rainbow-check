@@ -4,14 +4,14 @@ import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 
 const PAGE_TITLES = {
-  '/dashboard':     'Dashboard',
-  '/employees':     'Employee Management',
-  '/attendance':    'Attendance',
-  '/leaves':        'Leave Management',
-  '/reports':       'Reports & Analytics',
-  '/notifications': 'Notifications',
-  '/settings':      'Settings',
-  '/profile':       'My Profile',
+  '/dashboard':     'Tổng quan',
+  '/employees':     'Quản lý nhân viên',
+  '/attendance':    'Chấm công',
+  '/leaves':        'Quản lý nghỉ phép',
+  '/reports':       'Báo cáo & Thống kê',
+  '/notifications': 'Thông báo',
+  '/settings':      'Cài đặt',
+  '/profile':       'Hồ sơ của tôi',
 };
 
 export default function AppLayout({ children }) {
