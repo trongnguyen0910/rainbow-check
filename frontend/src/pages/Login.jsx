@@ -6,10 +6,10 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const DEMO_ACCOUNTS = [
-  { role: 'Admin',    username: 'admin',       password: 'Admin@123',   color: '#1E40AF' },
-  { role: 'HR',       username: 'hr_manager',  password: 'Hr@123',      color: '#059669' },
-  { role: 'Manager',  username: 'manager_eng', password: 'Manager@123', color: '#7C3AED' },
-  { role: 'Employee', username: 'emp001',      password: 'Emp@123',     color: '#D97706' },
+  { role: 'Admin',      username: 'admin',       password: 'Admin@123',   color: '#1E40AF' },
+  { role: 'HR',         username: 'hr_manager',  password: 'Hr@123',      color: '#059669' },
+  { role: 'Quản lý',   username: 'manager_eng', password: 'Manager@123', color: '#7C3AED' },
+  { role: 'Nhân viên', username: 'emp001',      password: 'Emp@123',     color: '#D97706' },
 ];
 
 export default function Login() {
@@ -23,10 +23,10 @@ export default function Login() {
     setLoading(true);
     try {
       await login(data.username, data.password);
-      toast.success('Welcome back!');
+      toast.success('Chào mừng trở lại!');
       navigate('/dashboard');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed.');
+      toast.error(err.response?.data?.message || 'Đăng nhập thất bại.');
     } finally {
       setLoading(false);
     }
@@ -39,10 +39,10 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950">
-      {/* Left — branding */}
+      {/* Trái — thương hiệu */}
       <div className="hidden lg:flex flex-col justify-between w-1/2 p-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-600/20 to-indigo-600/20" />
-        {/* Decorative circles */}
+        {/* Vòng trang trí */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
 
@@ -57,16 +57,16 @@ export default function Login() {
 
         <div className="relative space-y-6">
           <h2 className="text-4xl font-black text-white leading-tight">
-            Smart Attendance<br />
+            Quản lý chấm công<br />
             <span className="text-gradient bg-gradient-to-r from-primary-400 to-indigo-400 bg-clip-text text-transparent">
-              Management
+              Thông minh
             </span>
           </h2>
           <p className="text-slate-300 text-base leading-relaxed max-w-sm">
-            Track attendance, manage leave requests, generate reports — all in one beautiful enterprise dashboard.
+            Theo dõi chấm công, quản lý đơn nghỉ phép, tạo báo cáo — tất cả trong một dashboard doanh nghiệp hiện đại.
           </p>
           <div className="flex gap-6">
-            {[['15+', 'Employees'], ['99.9%', 'Uptime'], ['Real-time', 'Updates']].map(([v, l]) => (
+            {[['15+', 'Nhân viên'], ['99.9%', 'Hoạt động'], ['Thời gian thực', 'Cập nhật']].map(([v, l]) => (
               <div key={l}>
                 <p className="text-white font-bold text-xl">{v}</p>
                 <p className="text-slate-400 text-xs">{l}</p>
@@ -75,13 +75,13 @@ export default function Login() {
           </div>
         </div>
 
-        <p className="relative text-slate-500 text-xs">© 2026 Rainbow Corporation. All rights reserved.</p>
+        <p className="relative text-slate-500 text-xs">© 2026 Rainbow Corporation. Bảo lưu mọi quyền.</p>
       </div>
 
-      {/* Right — login form */}
+      {/* Phải — form đăng nhập */}
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
+          {/* Logo mobile */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center">
               <span className="text-white font-bold">R</span>
@@ -91,19 +91,19 @@ export default function Login() {
 
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
             <div className="mb-7">
-              <h1 className="text-2xl font-bold text-white">Sign in</h1>
-              <p className="text-slate-400 text-sm mt-1">Enter your credentials to continue</p>
+              <h1 className="text-2xl font-bold text-white">Đăng nhập</h1>
+              <p className="text-slate-400 text-sm mt-1">Nhập thông tin đăng nhập để tiếp tục</p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <label className="label text-slate-400">Username</label>
+                <label className="label text-slate-400">Tên đăng nhập</label>
                 <div className="relative">
                   <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
-                    {...register('username', { required: 'Username is required' })}
+                    {...register('username', { required: 'Vui lòng nhập tên đăng nhập' })}
                     className="input pl-10 bg-white/5 border-white/10 text-white placeholder-slate-500 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="your_username"
+                    placeholder="ten_dang_nhap"
                     autoComplete="username"
                   />
                 </div>
@@ -111,11 +111,11 @@ export default function Login() {
               </div>
 
               <div>
-                <label className="label text-slate-400">Password</label>
+                <label className="label text-slate-400">Mật khẩu</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
-                    {...register('password', { required: 'Password is required' })}
+                    {...register('password', { required: 'Vui lòng nhập mật khẩu' })}
                     type={showPw ? 'text' : 'password'}
                     className="input pl-10 pr-10 bg-white/5 border-white/10 text-white placeholder-slate-500 focus:ring-primary-500"
                     placeholder="••••••••"
@@ -138,14 +138,14 @@ export default function Login() {
                 className="w-full btn bg-primary-600 hover:bg-primary-700 text-white py-3 mt-2 disabled:opacity-60 focus:ring-primary-500"
               >
                 {loading ? <span className="spinner border-white/30 border-t-white" /> : (
-                  <> Sign in <ArrowRight size={16} /> </>
+                  <> Đăng nhập <ArrowRight size={16} /> </>
                 )}
               </button>
             </form>
 
-            {/* Demo accounts */}
+            {/* Tài khoản demo */}
             <div className="mt-7">
-              <p className="text-slate-500 text-xs text-center mb-3">Demo accounts — click to fill</p>
+              <p className="text-slate-500 text-xs text-center mb-3">Tài khoản demo — nhấn để điền</p>
               <div className="grid grid-cols-2 gap-2">
                 {DEMO_ACCOUNTS.map(acc => (
                   <button

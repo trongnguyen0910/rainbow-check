@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { Bell, Check, CheckCheck, AlertCircle, CalendarCheck, ClipboardList } from 'lucide-react';
 import { getNotifications, markRead, markAllRead } from '../api/notifications';
 import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 
 const TYPE_ICONS = {
-  late_checkin:   { Icon: AlertCircle, cls: 'text-amber-600 bg-amber-50 dark:bg-amber-900/20' },
+  late_checkin:   { Icon: AlertCircle,   cls: 'text-amber-600 bg-amber-50 dark:bg-amber-900/20' },
   leave_request:  { Icon: ClipboardList, cls: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' },
   leave_approved: { Icon: CalendarCheck, cls: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20' },
-  leave_rejected: { Icon: AlertCircle, cls: 'text-red-600 bg-red-50 dark:bg-red-900/20' },
+  leave_rejected: { Icon: AlertCircle,   cls: 'text-red-600 bg-red-50 dark:bg-red-900/20' },
 };
 
 export default function Notifications() {
@@ -22,7 +23,7 @@ export default function Notifications() {
       const res = await getNotifications();
       setNotifs(res.data.data.notifications || []);
       setUnread(res.data.data.unread_count || 0);
-    } catch { toast.error('Failed to load notifications'); }
+    } catch { toast.error('Không thể tải thông báo'); }
     finally { setLoading(false); }
   };
 
@@ -36,19 +37,19 @@ export default function Notifications() {
   const handleMarkAll = async () => {
     await markAllRead();
     load();
-    toast.success('All notifications marked as read');
+    toast.success('Đã đánh dấu tất cả là đã đọc');
   };
 
   return (
     <div className="space-y-5 max-w-2xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="page-title">Notifications</h1>
-          <p className="page-subtitle">{unread} unread</p>
+          <h1 className="page-title">Thông báo</h1>
+          <p className="page-subtitle">{unread} chưa đọc</p>
         </div>
         {unread > 0 && (
           <button onClick={handleMarkAll} className="btn-secondary gap-2 text-sm">
-            <CheckCheck size={15} /> Mark all read
+            <CheckCheck size={15} /> Đánh dấu tất cả đã đọc
           </button>
         )}
       </div>
@@ -61,7 +62,7 @@ export default function Notifications() {
         ) : notifs.length === 0 ? (
           <div className="text-center py-16">
             <Bell size={44} className="mx-auto text-slate-300 mb-3" />
-            <p className="text-slate-400">You're all caught up!</p>
+            <p className="text-slate-400">Không có thông báo nào!</p>
           </div>
         ) : (
           <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -81,11 +82,11 @@ export default function Notifications() {
                       {n.message}
                     </p>
                     <p className="text-xs text-slate-400 mt-1">
-                      {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: vi })}
                     </p>
                   </div>
                   {!n.is_read && (
-                    <button onClick={() => handleMarkRead(n.id)} className="btn-icon text-slate-400 hover:text-primary-600 flex-shrink-0" title="Mark as read">
+                    <button onClick={() => handleMarkRead(n.id)} className="btn-icon text-slate-400 hover:text-primary-600 flex-shrink-0" title="Đánh dấu đã đọc">
                       <Check size={15} />
                     </button>
                   )}

@@ -6,13 +6,13 @@ import {
 } from 'lucide-react';
 
 const NAV = [
-  { to: '/dashboard',    icon: LayoutDashboard, label: 'Dashboard',   roles: ['admin','hr','manager','employee'] },
-  { to: '/employees',    icon: Users,           label: 'Employees',   roles: ['admin','hr','manager'] },
-  { to: '/attendance',   icon: CalendarCheck,   label: 'Attendance',  roles: ['admin','hr','manager','employee'] },
-  { to: '/leaves',       icon: ClipboardList,   label: 'Leave',       roles: ['admin','hr','manager','employee'] },
-  { to: '/reports',      icon: BarChart3,       label: 'Reports',     roles: ['admin','hr'] },
-  { to: '/settings',     icon: Settings,        label: 'Settings',    roles: ['admin'] },
-  { to: '/profile',      icon: User,            label: 'Profile',     roles: ['admin','hr','manager','employee'] },
+  { to: '/dashboard',    icon: LayoutDashboard, label: 'Tổng quan',      roles: ['admin','hr','manager','employee'] },
+  { to: '/employees',    icon: Users,           label: 'Nhân viên',      roles: ['admin','hr','manager'] },
+  { to: '/attendance',   icon: CalendarCheck,   label: 'Chấm công',      roles: ['admin','hr','manager','employee'] },
+  { to: '/leaves',       icon: ClipboardList,   label: 'Nghỉ phép',      roles: ['admin','hr','manager','employee'] },
+  { to: '/reports',      icon: BarChart3,       label: 'Báo cáo',        roles: ['admin','hr'] },
+  { to: '/settings',     icon: Settings,        label: 'Cài đặt',        roles: ['admin'] },
+  { to: '/profile',      icon: User,            label: 'Hồ sơ',          roles: ['admin','hr','manager','employee'] },
 ];
 
 const ROLE_COLORS = {
@@ -33,7 +33,7 @@ export default function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {/* Mobile backdrop */}
+      {/* Nền mobile */}
       {open && (
         <div
           className="fixed inset-0 z-20 bg-black/50 lg:hidden"
@@ -56,7 +56,7 @@ export default function Sidebar({ open, onClose }) {
             </div>
             <div>
               <p className="text-white font-bold text-sm leading-tight">Rainbow AMS</p>
-              <p className="text-slate-400 text-xs">Attendance System</p>
+              <p className="text-slate-400 text-xs">Hệ thống chấm công</p>
             </div>
           </div>
           <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white p-1">
@@ -64,10 +64,10 @@ export default function Sidebar({ open, onClose }) {
           </button>
         </div>
 
-        {/* Navigation */}
+        {/* Điều hướng */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
-            Main Menu
+            Menu chính
           </p>
           {filteredNav.map(({ to, icon: Icon, label }) => (
             <NavLink
@@ -84,7 +84,7 @@ export default function Sidebar({ open, onClose }) {
           ))}
         </nav>
 
-        {/* User footer */}
+        {/* Thông tin người dùng */}
         <div className="px-3 py-4 border-t border-white/10">
           <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/5">
             <div className={`w-8 h-8 rounded-lg ${user?.avatar_color ? '' : ROLE_COLORS[user?.role]} flex items-center justify-center text-xs font-bold text-white flex-shrink-0`}
@@ -95,7 +95,7 @@ export default function Sidebar({ open, onClose }) {
               <p className="text-white text-xs font-semibold truncate">{user?.name}</p>
               <p className="text-slate-400 text-xs capitalize">{user?.role}</p>
             </div>
-            <button onClick={logout} className="text-slate-400 hover:text-red-400 transition-colors" title="Logout">
+            <button onClick={logout} className="text-slate-400 hover:text-red-400 transition-colors" title="Đăng xuất">
               <LogOut size={16} />
             </button>
           </div>

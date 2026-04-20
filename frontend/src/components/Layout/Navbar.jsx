@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { getNotifications, markRead, markAllRead } from '../../api/notifications';
 import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 const TYPE_COLORS = {
   late_checkin:   'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
@@ -39,7 +40,7 @@ export default function Navbar({ onMenuClick, title }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Close dropdowns on outside click
+  // Đóng dropdown khi click bên ngoài
   useEffect(() => {
     const handler = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
@@ -68,23 +69,23 @@ export default function Navbar({ onMenuClick, title }) {
 
   return (
     <header className="h-16 bg-white dark:bg-card-dark border-b border-slate-100 dark:border-slate-700/50 flex items-center px-4 gap-4 sticky top-0 z-10">
-      {/* Menu button (mobile) */}
+      {/* Nút menu (mobile) */}
       <button onClick={onMenuClick} className="btn-icon lg:hidden text-slate-600 dark:text-slate-300">
         <Menu size={20} />
       </button>
 
-      {/* Page title */}
+      {/* Tiêu đề trang */}
       <h1 className="text-base font-semibold text-slate-800 dark:text-white hidden sm:block">{title}</h1>
 
       <div className="flex-1" />
 
       <div className="flex items-center gap-2">
-        {/* Dark mode toggle */}
-        <button onClick={toggle} className="btn-icon text-slate-600 dark:text-slate-300" title="Toggle theme">
+        {/* Chuyển giao diện tối/sáng */}
+        <button onClick={toggle} className="btn-icon text-slate-600 dark:text-slate-300" title="Chuyển giao diện">
           {dark ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
-        {/* Notifications */}
+        {/* Thông báo */}
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => { setNotifOpen(o => !o); setUserOpen(false); }}
@@ -101,16 +102,16 @@ export default function Navbar({ onMenuClick, title }) {
           {notifOpen && (
             <div className="absolute right-0 top-full mt-2 w-80 card shadow-modal animate-slide-up z-50">
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-700">
-                <span className="font-semibold text-sm text-slate-800 dark:text-white">Notifications</span>
+                <span className="font-semibold text-sm text-slate-800 dark:text-white">Thông báo</span>
                 {unread > 0 && (
                   <button onClick={handleMarkAll} className="text-xs text-primary-600 hover:text-primary-700 font-medium">
-                    Mark all read
+                    Đánh dấu tất cả đã đọc
                   </button>
                 )}
               </div>
               <div className="max-h-80 overflow-y-auto">
                 {notifs.length === 0 ? (
-                  <p className="text-center text-sm text-slate-400 py-6">No notifications</p>
+                  <p className="text-center text-sm text-slate-400 py-6">Không có thông báo</p>
                 ) : notifs.slice(0, 8).map(n => (
                   <button
                     key={n.id}
@@ -121,7 +122,7 @@ export default function Navbar({ onMenuClick, title }) {
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-slate-700 dark:text-slate-300 leading-5">{n.message}</p>
                       <p className="text-xs text-slate-400 mt-0.5">
-                        {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
+                        {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: vi })}
                       </p>
                     </div>
                   </button>
@@ -130,14 +131,14 @@ export default function Navbar({ onMenuClick, title }) {
               <div className="p-2 border-t border-slate-100 dark:border-slate-700">
                 <Link to="/notifications" onClick={() => setNotifOpen(false)}
                   className="block text-center text-xs text-primary-600 hover:text-primary-700 font-medium py-1">
-                  View all notifications
+                  Xem tất cả thông báo
                 </Link>
               </div>
             </div>
           )}
         </div>
 
-        {/* User menu */}
+        {/* Menu người dùng */}
         <div className="relative" ref={userRef}>
           <button
             onClick={() => { setUserOpen(o => !o); setNotifOpen(false); }}
@@ -157,12 +158,12 @@ export default function Navbar({ onMenuClick, title }) {
             <div className="absolute right-0 top-full mt-2 w-48 card shadow-modal animate-slide-up z-50 py-1">
               <Link to="/profile" onClick={() => setUserOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/30">
-                <User size={15} /> Profile
+                <User size={15} /> Hồ sơ
               </Link>
               <hr className="my-1 border-slate-100 dark:border-slate-700" />
               <button onClick={logout}
                 className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
-                <LogOut size={15} /> Sign out
+                <LogOut size={15} /> Đăng xuất
               </button>
             </div>
           )}

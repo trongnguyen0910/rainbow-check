@@ -16,44 +16,44 @@ const EmployeeForm = ({ defaultValues, departments, onSubmit, loading }) => {
     <form id="emp-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2">
-          <label className="label">Full Name *</label>
-          <input {...register('name', { required: 'Name is required' })}
-            className={`input ${errors.name ? 'input-error' : ''}`} placeholder="Nguyen Van A" />
+          <label className="label">Họ và tên *</label>
+          <input {...register('name', { required: 'Vui lòng nhập họ tên' })}
+            className={`input ${errors.name ? 'input-error' : ''}`} placeholder="Nguyễn Văn A" />
           {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
         </div>
         <div>
-          <label className="label">Department *</label>
-          <select {...register('department_id', { required: 'Department is required' })} className={`select ${errors.department_id ? 'input-error' : ''}`}>
-            <option value="">Select...</option>
+          <label className="label">Phòng ban *</label>
+          <select {...register('department_id', { required: 'Vui lòng chọn phòng ban' })} className={`select ${errors.department_id ? 'input-error' : ''}`}>
+            <option value="">Chọn...</option>
             {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
           {errors.department_id && <p className="text-red-500 text-xs mt-1">{errors.department_id.message}</p>}
         </div>
         <div>
-          <label className="label">Position *</label>
-          <input {...register('position', { required: 'Position is required' })}
-            className={`input ${errors.position ? 'input-error' : ''}`} placeholder="Software Engineer" />
+          <label className="label">Chức vụ *</label>
+          <input {...register('position', { required: 'Vui lòng nhập chức vụ' })}
+            className={`input ${errors.position ? 'input-error' : ''}`} placeholder="Kỹ sư phần mềm" />
           {errors.position && <p className="text-red-500 text-xs mt-1">{errors.position.message}</p>}
         </div>
         <div>
           <label className="label">Email *</label>
-          <input {...register('email', { required: 'Email is required', pattern: { value: /^\S+@\S+\.\S+$/, message: 'Invalid email' } })}
+          <input {...register('email', { required: 'Vui lòng nhập email', pattern: { value: /^\S+@\S+\.\S+$/, message: 'Email không hợp lệ' } })}
             className={`input ${errors.email ? 'input-error' : ''}`} placeholder="email@rainbow.com" />
           {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
         </div>
         <div>
-          <label className="label">Phone</label>
+          <label className="label">Số điện thoại</label>
           <input {...register('phone')} className="input" placeholder="0901234567" />
         </div>
         <div>
-          <label className="label">Join Date</label>
+          <label className="label">Ngày vào làm</label>
           <input type="date" {...register('join_date')} className="input" />
         </div>
         <div>
-          <label className="label">Status</label>
+          <label className="label">Trạng thái</label>
           <select {...register('status')} className="select">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="active">Đang làm việc</option>
+            <option value="inactive">Đã nghỉ việc</option>
           </select>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function Employees() {
       const res = await getEmployees({ ...filters, page, limit: pagination.limit });
       setEmployees(res.data.data);
       setPagination(res.data.pagination);
-    } catch { toast.error('Failed to load employees'); }
+    } catch { toast.error('Không thể tải danh sách nhân viên'); }
     finally { setLoading(false); }
   }, [filters, pagination.limit]);
 
@@ -96,52 +96,52 @@ export default function Employees() {
     try {
       if (modal.mode === 'create') {
         await createEmployee(data);
-        toast.success('Employee created!');
+        toast.success('Thêm nhân viên thành công!');
       } else {
         await updateEmployee(modal.data.id, data);
-        toast.success('Employee updated!');
+        toast.success('Cập nhật nhân viên thành công!');
       }
       closeModal();
       load(1);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Operation failed');
+      toast.error(err.response?.data?.message || 'Thao tác thất bại');
     } finally { setSaving(false); }
   };
 
   const handleDelete = async () => {
     try {
       await deleteEmployee(deleteTarget.id);
-      toast.success('Employee deleted');
+      toast.success('Đã xóa nhân viên');
       setDeleteTarget(null);
       load(1);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Delete failed');
+      toast.error(err.response?.data?.message || 'Xóa thất bại');
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Tiêu đề */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="page-title">Employees</h1>
-          <p className="page-subtitle">Manage your workforce — {pagination.total} total</p>
+          <h1 className="page-title">Nhân viên</h1>
+          <p className="page-subtitle">Quản lý nhân sự — tổng {pagination.total} người</p>
         </div>
         {canAdmin() && (
           <button onClick={openCreate} className="btn-primary gap-2">
-            <Plus size={16} /> Add Employee
+            <Plus size={16} /> Thêm nhân viên
           </button>
         )}
       </div>
 
-      {/* Filters */}
+      {/* Bộ lọc */}
       <div className="card p-4">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               className="input pl-10"
-              placeholder="Search by name, ID, email..."
+              placeholder="Tìm theo tên, mã NV, email..."
               value={filters.search}
               onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
             />
@@ -151,7 +151,7 @@ export default function Employees() {
             value={filters.department}
             onChange={e => setFilters(f => ({ ...f, department: e.target.value }))}
           >
-            <option value="">All Departments</option>
+            <option value="">Tất cả phòng ban</option>
             {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
           <select
@@ -159,26 +159,26 @@ export default function Employees() {
             value={filters.status}
             onChange={e => setFilters(f => ({ ...f, status: e.target.value }))}
           >
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="">Tất cả trạng thái</option>
+            <option value="active">Đang làm việc</option>
+            <option value="inactive">Đã nghỉ việc</option>
           </select>
         </div>
       </div>
 
-      {/* Table */}
+      {/* Bảng */}
       <div className="card overflow-hidden">
         <div className="table-wrapper">
           <table className="table">
             <thead>
               <tr>
-                <th>Employee</th>
-                <th>ID</th>
-                <th>Department</th>
-                <th>Position</th>
-                <th>Join Date</th>
-                <th>Status</th>
-                {canAdmin() && <th className="text-right">Actions</th>}
+                <th>Nhân viên</th>
+                <th>Mã NV</th>
+                <th>Phòng ban</th>
+                <th>Chức vụ</th>
+                <th>Ngày vào làm</th>
+                <th>Trạng thái</th>
+                {canAdmin() && <th className="text-right">Thao tác</th>}
               </tr>
             </thead>
             <tbody>
@@ -189,7 +189,7 @@ export default function Employees() {
               ) : employees.length === 0 ? (
                 <tr><td colSpan="7" className="text-center py-12">
                   <Users size={40} className="mx-auto text-slate-300 mb-2" />
-                  <p className="text-slate-400 text-sm">No employees found</p>
+                  <p className="text-slate-400 text-sm">Không tìm thấy nhân viên</p>
                 </td></tr>
               ) : employees.map(emp => (
                 <tr key={emp.id}>
@@ -223,17 +223,17 @@ export default function Employees() {
         <Pagination {...pagination} onPageChange={p => load(p)} />
       </div>
 
-      {/* Create/Edit Modal */}
+      {/* Modal Tạo/Sửa */}
       <Modal
         open={modal.open}
         onClose={closeModal}
-        title={modal.mode === 'create' ? 'Add New Employee' : 'Edit Employee'}
+        title={modal.mode === 'create' ? 'Thêm nhân viên mới' : 'Chỉnh sửa nhân viên'}
         size="md"
         footer={
           <>
-            <button onClick={closeModal} className="btn-secondary">Cancel</button>
+            <button onClick={closeModal} className="btn-secondary">Hủy</button>
             <button type="submit" form="emp-form" disabled={saving} className="btn-primary">
-              {saving ? <span className="spinner border-white/30 border-t-white" /> : modal.mode === 'create' ? 'Create' : 'Update'}
+              {saving ? <span className="spinner border-white/30 border-t-white" /> : modal.mode === 'create' ? 'Tạo mới' : 'Cập nhật'}
             </button>
           </>
         }
@@ -246,21 +246,21 @@ export default function Employees() {
         />
       </Modal>
 
-      {/* Delete Confirm Modal */}
+      {/* Modal Xác nhận xóa */}
       <Modal
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
-        title="Delete Employee"
+        title="Xóa nhân viên"
         size="sm"
         footer={
           <>
-            <button onClick={() => setDeleteTarget(null)} className="btn-secondary">Cancel</button>
-            <button onClick={handleDelete} className="btn btn-danger bg-red-500 text-white hover:bg-red-600">Delete</button>
+            <button onClick={() => setDeleteTarget(null)} className="btn-secondary">Hủy</button>
+            <button onClick={handleDelete} className="btn btn-danger bg-red-500 text-white hover:bg-red-600">Xóa</button>
           </>
         }
       >
         <p className="text-slate-600 dark:text-slate-300 text-sm">
-          Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
+          Bạn có chắc muốn xóa <strong>{deleteTarget?.name}</strong>? Hành động này không thể hoàn tác.
         </p>
       </Modal>
     </div>
